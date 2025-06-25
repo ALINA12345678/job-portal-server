@@ -7,7 +7,7 @@ const applicationController = require('../controllers/applicationController');
 const statsController = require('../controllers/statsController');
 const profileController = require('../controllers/profileController');
 
-const authMiddleware = require('../Middlewares/jwtmiddleware');
+const authMiddleware = require('../Middleware1/jwtMiddleware');
 
 // User Routes
 router.post('/register', userController.register);
