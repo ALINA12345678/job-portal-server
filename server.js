@@ -20,6 +20,7 @@ jpServer.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-jpServer.listen(PORT, () => {
+jpServer.listen(PORT, '0.0.0.0', () => {
     console.log(`jp-server started at PORT: ${PORT}, and waiting for client request`);
 });
+
