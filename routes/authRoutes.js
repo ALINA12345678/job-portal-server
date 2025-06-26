@@ -31,8 +31,8 @@ router.get('/dashboard/stats', authMiddleware, statsController.getDashboardStats
 router.get('/profile', authMiddleware, profileController.getProfile);
 router.post('/profile', authMiddleware, profileController.saveOrUpdateProfile);
 
-// Feature Job
-router.patch('/jobs/:id/feature', authMiddleware, jobController.markJobAsFeatured);
+// // Feature Job
+// router.patch('/jobs/:id/feature', authMiddleware, jobController.markJobAsFeatured);
 
 //Delete User (Admin only)
 router.delete('/users/:id', authMiddleware, userController.deleteUser);

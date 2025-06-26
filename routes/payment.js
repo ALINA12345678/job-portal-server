@@ -1,44 +1,49 @@
-// const express = require("express");
-// const Razorpay = require("razorpay");
-// const authMiddleware = require("../Middleware1/jwtMiddleware"); 
-// const Job = require("../models/Job"); // adjust path if needed
+const express = require("express");
+const Razorpay = require("razorpay");
+const authMiddleware = require("../Middleware1/jwtMiddleware");
+const Job = require("../models/Job");
 
-// const router = express.Router();
+const router = express.Router();
 
-// const razorpay = new Razorpay({
-//   key_id: process.env.RAZORPAY_KEY_ID,
-//   key_secret: process.env.RAZORPAY_KEY_SECRET
-// });
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
+});
 
-// // Anyone can create order (optional: add auth here too)
-// router.post('/create-order', authMiddleware, async (req, res) => {
-//   try {
-//     const order = await razorpay.orders.create({
-//       amount: 19900,
-//       currency: "INR",
-//       receipt: `feat-${Date.now()}`
-//     });
-//     res.json(order);
-//   } catch (err) {
-//     res.status(500).send("Payment failed");
-//   }
-// });
+// ✅ Create payment order
+router.post('/create-order', authMiddleware, async (req, res) => {
+  try {
+    const { amount = 19900 } = req.body;
 
-// // Only logged-in employers can mark job as featured
-// router.post('/mark-featured', authMiddleware, async (req, res) => {
-//   const { jobId } = req.body;
-//   const user = req.user; // comes from auth middleware
+    const order = await razorpay.orders.create({
+      amount,
+      currency: "INR",
+      receipt: `feat-${Date.now()}`
+    });
 
-//   if (user.role !== 'employer') {
-//     return res.status(403).json({ message: "Only employers can feature jobs" });
-//   }
+    res.json(order);
+  } catch (err) {
+    console.error("Razorpay error:", err);
+    res.status(500).json({ message: "Payment creation failed", error: err.message });
+  }
+});
 
-//   try {
-//     await Job.findByIdAndUpdate(jobId, { isFeatured: true });
-//     res.json({ success: true });
-//   } catch (err) {
-//     res.status(500).json({ message: "Failed to update job" });
-//   }
-// });
+// ✅ Mark job as featured (post-payment)
+router.post('/mark-featured', authMiddleware, async (req, res) => {
+  const { jobId } = req.body;
+  const user = req.user;
 
-// module.exports = router;
+  if (user.role !== 'employer') {
+    return res.status(403).json({ message: "Only employers can feature jobs" });
+  }
+
+  try {
+    await Job.findByIdAndUpdate(jobId, { isFeatured: true });
+    res.json({ success: true, message: "Job marked as featured" });
+  } catch (err) {
+    console.error("Feature update failed:", err);
+    res.status(500).json({ message: "Failed to update job", error: err.message });
+  }
+});
+
+module.exports = router;
