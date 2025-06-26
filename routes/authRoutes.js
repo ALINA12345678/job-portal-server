@@ -32,6 +32,9 @@ router.get('/dashboard/stats', authMiddleware, statsController.getDashboardStats
 
 router.get('/profile', authMiddleware, profileController.getProfile);
 router.post('/profile', authMiddleware, profileController.saveOrUpdateProfile);
+//feature
+router.patch('/jobs/:id/feature',authMiddleware, jobController.markJobAsFeatured);
+
 
 
 

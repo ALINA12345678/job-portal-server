@@ -12,11 +12,14 @@ const jpServer = express();
 jpServer.use(cors());
 jpServer.use(express.json());
 jpServer.use(router);
+jpServer.use('/payment', require('./routes/payment'));
 
 // Health check route
 jpServer.get('/', (req, res) => {
     res.send("<h1 style='color:red'>Job Portal server started successfully...</h1>");
 });
+
+
 
 const PORT = process.env.PORT || 5000;
 

@@ -65,3 +65,30 @@ exports.deleteJob = async (req, res) => {
   }
 };
 
+exports.markJobAsFeatured = async (req, res) => {
+  try {
+    // Optional: double-check employer role if not in middleware
+    if (req.user.role !== 'employer') {
+      return res.status(403).json({ message: "Only employers can feature jobs" });
+    }
+
+    const job = await Job.findById(req.params.id);
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    if (job.isFeatured) {
+      return res.status(400).json({ message: "Job is already featured" });
+    }
+
+    job.isFeatured = true;
+    const updated = await job.save();
+
+    res.json({ message: "Job marked as featured", job: updated });
+  } catch (err) {
+    console.error(" Error marking job as featured:", err.message);
+    res.status(500).json({ message: "Failed to mark job as featured" });
+  }
+};
+
