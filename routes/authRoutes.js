@@ -24,19 +24,21 @@ router.post('/jobs/:jobId/apply', authMiddleware, applicationController.applyToJ
 router.get('/jobs/:jobId/applications', authMiddleware, applicationController.getApplicationsForJob);
 router.get('/applications', authMiddleware, applicationController.getApplicationsForCurrentUser);
 
-//stats
+// Stats
 router.get('/dashboard/stats', authMiddleware, statsController.getDashboardStats);
 
-//profile 
-
-
+// Profile
 router.get('/profile', authMiddleware, profileController.getProfile);
 router.post('/profile', authMiddleware, profileController.saveOrUpdateProfile);
-//feature
-router.patch('/jobs/:id/feature',authMiddleware, jobController.markJobAsFeatured);
 
+// Feature Job
+router.patch('/jobs/:id/feature', authMiddleware, jobController.markJobAsFeatured);
 
+//Delete User (Admin only)
+router.delete('/users/:id', authMiddleware, userController.deleteUser);
 
+// Update application status (admin/employer only)
+router.patch('/applications/:id/status', authMiddleware, applicationController.updateApplicationStatus);
 
 
 module.exports = router;
